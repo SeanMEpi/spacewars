@@ -7,23 +7,26 @@ canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 var canvasW = window.innerWidth;
 var canvasH = window.innerHeight;
+context.fillStyle = "#000000";
+context.fillRect(0,0,canvasW,canvasH);
 
 var Ship = function Ship() {
   this.image = document.getElementById("ship");
-  this.drawRotatedImage = function(x, y, angle) {
+  this.drawRotatedImage = function(x, y, angle, w, h) {
     context.save();
     context.translate(x, y);
     context.rotate(angle);
-    context.drawImage(this.image, -(.5 * this.image.width), -(.5 * this.image.height));
+    context.drawImage(this.image, -(w / 2), -(h / 2), canvasH / 20, canvasW / 25);
     context.restore();
   };
 };
 var testShip = new Ship();
 
-testShip.drawRotatedImage((canvasW * .5), (canvasH * .5), 0);
-testShip.drawRotatedImage((canvasW * .5), (canvasH * .5), Math.PI / 2);
-testShip.drawRotatedImage((canvasW * .5), (canvasH * .5), Math.PI);
-testShip.drawRotatedImage((canvasW * .5), (canvasH * .5), 3 * Math.PI / 2);
+testShip.drawRotatedImage((canvasW * .10), (canvasH * .10), 0, canvasH / 20, canvasW / 25);
+testShip.drawRotatedImage((canvasW * .20), (canvasH * .20), 0, canvasH / 20, canvasW / 25);
+testShip.drawRotatedImage((canvasW * .30), (canvasH * .30), 0, canvasH / 20, canvasW / 25);
+testShip.drawRotatedImage((canvasW * .40), (canvasH * .40), 0, canvasH / 20, canvasW / 25);
+testShip.drawRotatedImage((canvasW * .50), (canvasH * .50), 0, canvasH / 20, canvasW / 25);
 
 
 
