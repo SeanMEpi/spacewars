@@ -1,5 +1,5 @@
 document.getElementById("ship").style.display = "none";
-document.getElementById("explosion").style.display = "none";
+document.getElementById("starfield").style.display = "none";
 
 var canvas = document.getElementById("canvas");
 var context = canvas.getContext("2d");
@@ -7,8 +7,13 @@ canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 var canvasW = window.innerWidth;
 var canvasH = window.innerHeight;
-context.fillStyle = "#000000";
-context.fillRect(0,0,canvasW,canvasH);
+function drawBackground() {
+  context.fillStyle = "#000000";
+  context.fillRect(0,0,canvasW,canvasH);
+  var backgroundImage = document.getElementById("starfield");
+  context.drawImage(backgroundImage, 0, 0, canvasW, canvasH);
+};
+drawBackground();
 
 var Ship = function Ship() {
   this.image = document.getElementById("ship");
@@ -23,6 +28,7 @@ var Ship = function Ship() {
 var testShip = new Ship();
 
 testShip.drawRotatedImage((canvasW * .10), (canvasH * .10), 0, canvasH / 20, canvasW / 25);
+testShip.drawRotatedImage((canvasW * .10), (canvasH * .10), Math.PI, canvasH / 20, canvasW / 25);
 testShip.drawRotatedImage((canvasW * .20), (canvasH * .20), 0, canvasH / 20, canvasW / 25);
 testShip.drawRotatedImage((canvasW * .30), (canvasH * .30), 0, canvasH / 20, canvasW / 25);
 testShip.drawRotatedImage((canvasW * .40), (canvasH * .40), 0, canvasH / 20, canvasW / 25);
