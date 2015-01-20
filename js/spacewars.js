@@ -13,7 +13,6 @@ function drawBackground() {
   var backgroundImage = document.getElementById("starfield");
   context.drawImage(backgroundImage, 0, 0, canvasW, canvasH);
 };
-drawBackground();
 
 var Ship = function Ship() {
   this.image = document.getElementById("ship");
@@ -27,12 +26,15 @@ var Ship = function Ship() {
 };
 var testShip = new Ship();
 
+drawBackground();
 testShip.drawRotatedImage((canvasW * .10), (canvasH * .10), 0, canvasH / 20, canvasW / 25);
-testShip.drawRotatedImage((canvasW * .10), (canvasH * .10), Math.PI, canvasH / 20, canvasW / 25);
 testShip.drawRotatedImage((canvasW * .20), (canvasH * .20), 0, canvasH / 20, canvasW / 25);
 testShip.drawRotatedImage((canvasW * .30), (canvasH * .30), 0, canvasH / 20, canvasW / 25);
 testShip.drawRotatedImage((canvasW * .40), (canvasH * .40), 0, canvasH / 20, canvasW / 25);
 testShip.drawRotatedImage((canvasW * .50), (canvasH * .50), 0, canvasH / 20, canvasW / 25);
-
+testShip.drawRotatedImage((canvasW * .60), (canvasH * .60), 0, canvasH / 20, canvasW / 25);
+testShip.drawRotatedImage((canvasW * .70), (canvasH * .70), 0, canvasH / 20, canvasW / 25);
+testShip.drawRotatedImage((canvasW * .80), (canvasH * .80), 0, canvasH / 20, canvasW / 25);
+testShip.drawRotatedImage((canvasW * .90), (canvasH * .90), 0, canvasH / 20, canvasW / 25);
 
 
