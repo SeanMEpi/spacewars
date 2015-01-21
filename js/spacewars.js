@@ -1,5 +1,4 @@
 document.getElementById("ship").style.display = "none";
-document.getElementById("starfield").style.display = "none";
 
 var canvas = document.getElementById("canvas");
 var context = canvas.getContext("2d");
@@ -10,9 +9,7 @@ var canvasH = window.innerHeight;
 function drawBackground() {
   context.fillStyle = "#000000";
   context.fillRect(0,0,canvasW,canvasH);
-  var backgroundImage = document.getElementById("starfield");
-  context.drawImage(backgroundImage, 0, 0, canvasW, canvasH);
-};
+  };
 
 var Ship = function Ship() {
   this.image = document.getElementById("ship");
