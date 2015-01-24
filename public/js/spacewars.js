@@ -24,14 +24,14 @@ var Ship = function Ship() {
 var testShip = new Ship();
 
 drawBackground();
-testShip.drawRotatedImage((canvasW * .10), (canvasH * .10), 0, canvasH / 20, canvasW / 25);
-testShip.drawRotatedImage((canvasW * .20), (canvasH * .20), 0, canvasH / 20, canvasW / 25);
-testShip.drawRotatedImage((canvasW * .30), (canvasH * .30), 0, canvasH / 20, canvasW / 25);
-testShip.drawRotatedImage((canvasW * .40), (canvasH * .40), 0, canvasH / 20, canvasW / 25);
-testShip.drawRotatedImage((canvasW * .50), (canvasH * .50), 0, canvasH / 20, canvasW / 25);
-testShip.drawRotatedImage((canvasW * .60), (canvasH * .60), 0, canvasH / 20, canvasW / 25);
-testShip.drawRotatedImage((canvasW * .70), (canvasH * .70), 0, canvasH / 20, canvasW / 25);
-testShip.drawRotatedImage((canvasW * .80), (canvasH * .80), 0, canvasH / 20, canvasW / 25);
-testShip.drawRotatedImage((canvasW * .90), (canvasH * .90), 0, canvasH / 20, canvasW / 25);
+testShip.drawRotatedImage((canvasW * .100), (canvasH * .500), 0, canvasH / 20, canvasW / 25);
+testShip.drawRotatedImage((canvasW * .101), (canvasH * .501), 0, canvasH / 20, canvasW / 25);
+testShip.drawRotatedImage((canvasW * .102), (canvasH * .502), 0, canvasH / 20, canvasW / 25);
+testShip.drawRotatedImage((canvasW * .103), (canvasH * .503), 0, canvasH / 20, canvasW / 25);
+testShip.drawRotatedImage((canvasW * .104), (canvasH * .504), 0, canvasH / 20, canvasW / 25);
+testShip.drawRotatedImage((canvasW * .105), (canvasH * .505), 0, canvasH / 20, canvasW / 25);
+testShip.drawRotatedImage((canvasW * .106), (canvasH * .506), 0, canvasH / 20, canvasW / 25);
+testShip.drawRotatedImage((canvasW * .107), (canvasH * .507), 0, canvasH / 20, canvasW / 25);
+testShip.drawRotatedImage((canvasW * .108), (canvasH * .508), 0, canvasH / 20, canvasW / 25);
 
 
