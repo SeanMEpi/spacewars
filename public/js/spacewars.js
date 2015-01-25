@@ -23,6 +23,13 @@ var Ship = function Ship() {
 };
 var testShip = new Ship();
 
+window.addEventListener('keydown',function(e) {
+  socket.emit('client keydown', e.keyCode);
+},true);
+window.addEventListener('keyup',function(e) {
+  socket.emit('client keyup', e.keyCode);
+},true);
+
 drawBackground();
 testShip.drawRotatedImage((canvasW * .100), (canvasH * .500), 0, canvasH / 20, canvasW / 25);
 testShip.drawRotatedImage((canvasW * .101), (canvasH * .501), 0, canvasH / 20, canvasW / 25);
