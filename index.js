@@ -12,6 +12,7 @@ app.use(express.static(__dirname + '/public'));
 io.on('connection', function(socket) {
   socket.on('client keydown', function(msg) {
     console.log('client keydown: ' + msg);
+    io.emit('server message', msg);
   });
   socket.on('client keyup', function(msg) {
     console.log('client keyup: ' + msg);
