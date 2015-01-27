@@ -23,3 +23,8 @@ http.listen(3000, function() {
   console.log('listening on *:3000');
 });
 
+function update() {
+  io.emit('server frame', 'test');
+};
+
+setInterval(update, 1000/60);

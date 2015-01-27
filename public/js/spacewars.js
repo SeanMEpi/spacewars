@@ -23,11 +23,13 @@ $.getScript("/socket.io/socket.io.js", function() {
       context.restore();
     };
   };
-  var testShip = new Ship();
 
   var socket = io();
-  socket.on('server message', function(msg){
+  socket.on('server message', function(msg) {
     console.log('Server message: ' + msg);
+  });
+  socket.on('server frame', function(msg) {
+    console.log('New Frame Message: ' + msg);
   });
   window.addEventListener('keydown',function(e) {
     socket.emit('client keydown', e.keyCode);
@@ -36,6 +38,7 @@ $.getScript("/socket.io/socket.io.js", function() {
     socket.emit('client keyup', e.keyCode);
   },true);
 
+  var testShip = new Ship();
   drawBackground();
   testShip.drawRotatedImage((canvasW * .100), (canvasH * .500), 0, canvasH / 20, canvasW / 25);
   testShip.drawRotatedImage((canvasW * .101), (canvasH * .501), 0, canvasH / 20, canvasW / 25);
