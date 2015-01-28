@@ -15,21 +15,33 @@ $.getScript("/socket.io/socket.io.js", function() {
 
   var Ship = function Ship() {
     this.image = document.getElementById("ship");
+    // w & h refer to size of image; the ship images are being scaled to the canvas size
     this.drawRotatedImage = function(x, y, angle, w, h) {
       context.save();
       context.translate(x, y);
       context.rotate(angle);
-      context.drawImage(this.image, -(w / 2), -(h / 2), canvasH / 20, canvasW / 25);
+      context.drawImage(this.image, -(w / 2), -(h / 2), canvasW / 25, canvasH / 20);
       context.restore();
     };
   };
+
+  function drawFrame(s1_x, s1_y, s1_angle, s2_x, s2_y, s2_angle) {
+    drawBackground();
+    ship1.drawRotatedImage(s1_x, s1_y, s1_angle, canvasW / 25, canvasH / 20);
+    ship2.drawRotatedImage(s2_x, s2_y, s2_angle, canvasW / 25, canvasH / 20);
+  };
+
+  ship1 = new Ship();
+  ship2 = new Ship();
 
   var socket = io();
   socket.on('server message', function(msg) {
     console.log('Server message: ' + msg);
   });
   socket.on('server frame', function(msg) {
-    console.log('New Frame Message: ' + msg);
+    var params = msg.split(" ");
+    drawFrame(parseFloat(params[0]), parseFloat(params[1]), parseFloat(params[2]),
+              parseFloat(params[3]), parseFloat(params[4]), parseFloat(params[5]));
   });
   window.addEventListener('keydown',function(e) {
     socket.emit('client keydown', e.keyCode);
@@ -37,17 +49,5 @@ $.getScript("/socket.io/socket.io.js", function() {
   window.addEventListener('keyup',function(e) {
     socket.emit('client keyup', e.keyCode);
   },true);
-
-  var testShip = new Ship();
-  drawBackground();
-  testShip.drawRotatedImage((canvasW * .100), (canvasH * .500), 0, canvasH / 20, canvasW / 25);
-  testShip.drawRotatedImage((canvasW * .101), (canvasH * .501), 0, canvasH / 20, canvasW / 25);
-  testShip.drawRotatedImage((canvasW * .102), (canvasH * .502), 0, canvasH / 20, canvasW / 25);
-  testShip.drawRotatedImage((canvasW * .103), (canvasH * .503), 0, canvasH / 20, canvasW / 25);
-  testShip.drawRotatedImage((canvasW * .104), (canvasH * .504), 0, canvasH / 20, canvasW / 25);
-  testShip.drawRotatedImage((canvasW * .105), (canvasH * .505), 0, canvasH / 20, canvasW / 25);
-  testShip.drawRotatedImage((canvasW * .106), (canvasH * .506), 0, canvasH / 20, canvasW / 25);
-  testShip.drawRotatedImage((canvasW * .107), (canvasH * .507), 0, canvasH / 20, canvasW / 25);
-  testShip.drawRotatedImage((canvasW * .108), (canvasH * .508), 0, canvasH / 20, canvasW / 25);
 
 });
