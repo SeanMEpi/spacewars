@@ -40,8 +40,8 @@ $.getScript("/socket.io/socket.io.js", function() {
   });
   socket.on('server frame', function(msg) {
     var params = msg.split(" ");
-    drawFrame(parseFloat(params[0]), parseFloat(params[1]), parseFloat(params[2]),
-              parseFloat(params[3]), parseFloat(params[4]), parseFloat(params[5]));
+    drawFrame(parseFloat(params[0]) * canvasW, parseFloat(params[1]) * canvasH, parseFloat(params[2]),
+              parseFloat(params[3]) * canvasW, parseFloat(params[4]) * canvasH, parseFloat(params[5]));
   });
   window.addEventListener('keydown',function(e) {
     socket.emit('client keydown', e.keyCode);

@@ -29,4 +29,4 @@ function update(s1_x, s1_y, s1_angle, s2_x, s2_y, s2_angle) {
   io.emit('server frame', txMsg);
 };
 
-setInterval( function() { update(100, 100, 0, 400, 100, 3.1416); }, 1000/60);
+setInterval( function() { update(.100, .100, 0, .400, .100, 3.1416); }, 1000/60);
