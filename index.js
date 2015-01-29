@@ -9,6 +9,8 @@ app.get('/', function(req, res) {
 app.use(express.static(__dirname + '/public'));
 
 function Ship() {
+  this.clientId = 0; // client code
+  this.keydown = [];
   this.x = 0; // absolute position (.000 to .999)
   this.y = 0; // absolute position (.000 to .999)
   this.direction = 0; // radians
@@ -26,10 +28,15 @@ function Ship() {
   };
 };
 
+function generateId() {
+  return Math.random() * 1e+9;
+};
 io.on('connection', function(socket) {
+  ship = new Ship();
+  ship.clientId = generateId();
+  io.emit('client ID', ship.clientId);
   socket.on('client keydown', function(msg) {
     console.log('client keydown: ' + msg);
-    io.emit('server message', msg);
   });
   socket.on('client keyup', function(msg) {
     console.log('client keyup: ' + msg);

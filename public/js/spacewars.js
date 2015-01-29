@@ -31,10 +31,14 @@ $.getScript("/socket.io/socket.io.js", function() {
     ship2.drawRotatedImage(s2_x, s2_y, s2_angle, canvasW / 25, canvasH / 20);
   };
 
+  ship0 = new Ship();
   ship1 = new Ship();
-  ship2 = new Ship();
 
+  var clientId = 0;
   var socket = io();
+  socket.on('client ID', function(msg) {
+    clientId = parseFloat(msg);
+  });
   socket.on('server message', function(msg) {
     console.log('Server message: ' + msg);
   });
