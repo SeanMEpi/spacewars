@@ -13,7 +13,7 @@ $.getScript("/socket.io/socket.io.js", function() {
     context.fillRect(0,0,canvasW,canvasH);
     };
 
-  var Ship = function Ship() {
+  function Ship() {
     this.image = document.getElementById("ship");
     // w & h refer to size of image; the ship images are being scaled to the canvas size
     this.drawRotatedImage = function(x, y, angle, w, h) {
