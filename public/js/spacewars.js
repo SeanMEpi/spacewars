@@ -27,8 +27,8 @@ $.getScript("/socket.io/socket.io.js", function() {
 
   function drawFrame(s1_x, s1_y, s1_angle, s2_x, s2_y, s2_angle) {
     drawBackground();
-    ship1.drawRotatedImage(s1_x, s1_y, s1_angle, canvasW / 25, canvasH / 20);
-    ship2.drawRotatedImage(s2_x, s2_y, s2_angle, canvasW / 25, canvasH / 20);
+    ship0.drawRotatedImage(s1_x, s1_y, s1_angle, canvasW / 25, canvasH / 20);
+    ship1.drawRotatedImage(s2_x, s2_y, s2_angle, canvasW / 25, canvasH / 20);
   };
 
   ship0 = new Ship();
@@ -38,6 +38,7 @@ $.getScript("/socket.io/socket.io.js", function() {
   var socket = io();
   socket.on('client ID', function(msg) {
     clientId = parseFloat(msg);
+    console.log('client ID: ' + msg);
   });
   socket.on('server message', function(msg) {
     console.log('Server message: ' + msg);
@@ -48,10 +49,12 @@ $.getScript("/socket.io/socket.io.js", function() {
               parseFloat(params[3]) * canvasW, parseFloat(params[4]) * canvasH, parseFloat(params[5]));
   });
   window.addEventListener('keydown',function(e) {
-    socket.emit('client keydown', e.keyCode);
+    txMsg = clientId + ' ' + e.keyCode;
+    socket.emit('client keydown', txMsg);
   },true);
   window.addEventListener('keyup',function(e) {
-    socket.emit('client keyup', e.keyCode);
+    txMsg = clientId + ' ' + e.keyCode;
+    socket.emit('client keyup', txMsg);
   },true);
 
 });

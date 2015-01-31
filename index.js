@@ -29,7 +29,7 @@ function Ship() {
 };
 
 function generateId() {
-  return Math.random() * 1e+9;
+  return Math.random() * 1e+17;
 };
 io.on('connection', function(socket) {
   ship = new Ship();
