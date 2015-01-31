@@ -32,10 +32,18 @@ function Ship() {
 io.on('connection', function(socket) {
   ship = new Ship();
   ship.socketId = socket.id;
-  console.log('socket id: ' + socket.id);
+  console.log('client connect: ' + socket.id);
   io.emit('client ID', ship.socketId);
-  //io.emit('client socket', ship.socket);
   ships.push(ship);
+
+  socket.on('disconnect', function() {
+    for (i=0; i<ships.length; i++) {
+      if (ships[i].socketId === socket.id) {
+        ships.splice(i,1);
+        console.log('client disconnect: ' + socket.id);
+      };
+    };
+  });
 
   socket.on('client keydown', function(msg) {
     var rxParams = msg.split(' ');
