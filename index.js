@@ -51,7 +51,7 @@ io.on('connection', function(socket) {
     var rxKeydown = rxParams[1];
     console.log('client: ' + rxID + ' ' + 'keydown: ' + rxKeydown);
     for (i=0;i<ships.length;i++) {
-      if (rxID = ships[i].clientId) {
+      if (rxID === ships[i].socketId) {
         ships[i].keyState[rxKeydown] = true;
         console.log('client: ' + rxID + ' ' + 'keystate: ' + ships[i].keyState);
       };
@@ -63,7 +63,7 @@ io.on('connection', function(socket) {
     var rxKeyup = rxParams[1];
     console.log('client: ' + rxID + ' ' + 'keyup: ' + rxKeyup);
     for (i=0;i<ships.length;i++) {
-      if (rxID = ships[i].clientId) {
+      if (rxID === ships[i].socketId) {
         ships[i].keyState[rxKeyup] = false;
         console.log('client: ' + rxID + ' ' + 'keystate: ' + ships[i].keyState);
       };
