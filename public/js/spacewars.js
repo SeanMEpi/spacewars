@@ -34,19 +34,21 @@ $.getScript("/socket.io/socket.io.js", function() {
   ship0 = new Ship();
   ship1 = new Ship();
 
-  var clientId = 0;
+  var clientId = '';
   var socket = io();
   socket.on('client ID', function(msg) {
-    clientId = parseFloat(msg);
-    console.log('client ID: ' + msg);
+    if (clientId === '') {
+      clientId = msg;
+      console.log('client ID: ' + clientId);
+    };
   });
   socket.on('server message', function(msg) {
     console.log('Server message: ' + msg);
   });
   socket.on('server frame', function(msg) {
-    var params = msg.split(" ");
-    drawFrame(parseFloat(params[0]) * canvasW, parseFloat(params[1]) * canvasH, parseFloat(params[2]),
-              parseFloat(params[3]) * canvasW, parseFloat(params[4]) * canvasH, parseFloat(params[5]));
+    var rxParams = msg.split(' ');
+    drawFrame(parseFloat(rxParams[0]) * canvasW, parseFloat(rxParams[1]) * canvasH, parseFloat(rxParams[2]),
+              parseFloat(rxParams[3]) * canvasW, parseFloat(rxParams[4]) * canvasH, parseFloat(rxParams[5]));
   });
   window.addEventListener('keydown',function(e) {
     txMsg = clientId + ' ' + e.keyCode;

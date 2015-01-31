@@ -8,9 +8,10 @@ app.get('/', function(req, res) {
 });
 app.use(express.static(__dirname + '/public'));
 
+var ships = [];
 function Ship() {
-  this.clientId = 0; // client code
-  this.keydown = [];
+  this.socketId = null;
+  this.keyState = [];
   this.x = 0; // absolute position (.000 to .999)
   this.y = 0; // absolute position (.000 to .999)
   this.direction = 0; // radians
@@ -28,18 +29,37 @@ function Ship() {
   };
 };
 
-function generateId() {
-  return Math.random() * 1e+17;
-};
 io.on('connection', function(socket) {
   ship = new Ship();
-  ship.clientId = generateId();
-  io.emit('client ID', ship.clientId);
+  ship.socketId = socket.id;
+  console.log('socket id: ' + socket.id);
+  io.emit('client ID', ship.socketId);
+  //io.emit('client socket', ship.socket);
+  ships.push(ship);
+
   socket.on('client keydown', function(msg) {
-    console.log('client keydown: ' + msg);
+    var rxParams = msg.split(' ');
+    var rxID = rxParams[0];
+    var rxKeydown = rxParams[1];
+    console.log('client: ' + rxID + ' ' + 'keydown: ' + rxKeydown);
+    for (i=0;i<ships.length;i++) {
+      if (rxID = ships[i].clientId) {
+        ships[i].keyState[rxKeydown] = true;
+        console.log('client: ' + rxID + ' ' + 'keystate: ' + ships[i].keyState);
+      };
+    };
   });
   socket.on('client keyup', function(msg) {
-    console.log('client keyup: ' + msg);
+    var rxParams = msg.split(' ');
+    var rxID = rxParams[0];
+    var rxKeyup = rxParams[1];
+    console.log('client: ' + rxID + ' ' + 'keyup: ' + rxKeyup);
+    for (i=0;i<ships.length;i++) {
+      if (rxID = ships[i].clientId) {
+        ships[i].keyState[rxKeyup] = false;
+        console.log('client: ' + rxID + ' ' + 'keystate: ' + ships[i].keyState);
+      };
+    };
   });
 });
 
