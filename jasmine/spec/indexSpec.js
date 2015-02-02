@@ -17,11 +17,6 @@ describe("index.js", function() {
       ship1.addVector((3 * Math.PI) / 2, .001);
       expect(ship1.vector).toEqual([-.002, -.002]);
     });
-    it("generates random client ID", function() {
-      ship = new Ship();
-      ship.clientId = generateId();
-      expect(ship.clientId).not.toBe(0);
-    });
   });
 });
 

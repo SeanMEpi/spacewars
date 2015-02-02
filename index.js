@@ -75,13 +75,35 @@ http.listen(3000, function() {
   console.log('listening on *:3000');
 });
 
-function update(s1_x, s1_y, s1_angle, s2_x, s2_y, s2_angle) {
+function update() {
+  updateClients();
+  txFrame(.100, .100, 0, .400, .400, 3 * Math.PI / 2);
+}
+
+function txFrame(s1_x, s1_y, s1_angle, s2_x, s2_y, s2_angle) {
   var txMsg = s1_x.toString() + ' ' + s1_y.toString() + ' ' + s1_angle.toString() + ' ' +
               s2_x.toString() + ' ' + s2_y.toString() + ' ' + s2_angle.toString();
   io.emit('server frame', txMsg);
 };
 
-setInterval( function() { update(.100, .100, 0, .400, .400, 3 * Math.PI / 2); }, 1000/60);
+function updateClients() {
+  for (i=0; i<ships.length; i++) {
+    if (ships[i].keyState[65]) {
+      console.log('client: ' + ships[i].socketId + ' rotate counterclockwise');
+    };
+    if (ships[i].keyState[68]) {
+      console.log('client: ' + ships[i].socketId + ' rotate clockwise');
+    };
+    if (ships[i].keyState[87]) {
+      console.log('client: ' + ships[i].socketId + ' thrust');
+    };
+    if (ships[i].keyState[74]) {
+      console.log('client: ' + ships[i].socketId + ' fire');
+    };
+  };
+};
+
+setInterval( function() { update(); }, 1000/60);
 
 
 
