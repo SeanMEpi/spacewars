@@ -27,6 +27,9 @@ function Ship() {
     this.vector[0] += xToAdd;
     this.vector[1] += yToAdd;
   };
+  this.rotate = function(amount) {
+    this.direction += amount;
+  };
 };
 
 io.on('connection', function(socket) {
@@ -76,9 +79,11 @@ http.listen(3000, function() {
 });
 
 function update() {
-  updateClients();
-  txFrame(.100, .100, 0, .400, .400, 3 * Math.PI / 2);
-}
+  if (ships[0] && ships[1]) {  // don't run until clients are connected
+    updateClients();
+    txFrame(.100, .100, ships[0].direction, .400, .400, ships[1].direction);
+  };
+};
 
 function txFrame(s1_x, s1_y, s1_angle, s2_x, s2_y, s2_angle) {
   var txMsg = s1_x.toString() + ' ' + s1_y.toString() + ' ' + s1_angle.toString() + ' ' +
@@ -89,9 +94,11 @@ function txFrame(s1_x, s1_y, s1_angle, s2_x, s2_y, s2_angle) {
 function updateClients() {
   for (i=0; i<ships.length; i++) {
     if (ships[i].keyState[65]) {
+      ships[i].rotate(-Math.PI / 32);
       console.log('client: ' + ships[i].socketId + ' rotate counterclockwise');
     };
     if (ships[i].keyState[68]) {
+      ships[i].rotate(Math.PI / 32);
       console.log('client: ' + ships[i].socketId + ' rotate clockwise');
     };
     if (ships[i].keyState[87]) {
