@@ -10,7 +10,7 @@ app.use(express.static(__dirname + '/public'));
 
 var ships = [];
 function Ship() {
-  this.socketId = null;
+  this.socketId = 0;
   this.keyState = [];
   this.x = 0; // absolute position (.000 to .999)
   this.y = 0; // absolute position (.000 to .999)
@@ -23,6 +23,10 @@ function Ship() {
   };
   this.setDirection = function(direction) {
     this.direction = direction;
+  };
+  this.resetVector = function() {
+    this.vector[0] = 0;
+    this.vector[1] = 0;
   };
   this.addVector = function(direction, impulse) {
     xToAdd = impulse * Math.cos(direction);
@@ -39,24 +43,33 @@ function Ship() {
   };
 };
 
+ships[0] = new Ship();
+ships[1] = new Ship();
+
 io.on('connection', function(socket) {
-  ship = new Ship();
-  ship.socketId = socket.id;
-  console.log('client connect: ' + socket.id);
-  io.emit('client ID', ship.socketId);
-  ships.push(ship);
-  if (ships[0].socketId === socket.id) {
+  var set = false;
+  if (ships[0].socketId === 0) {
+    ships[0].socketId = socket.id;
     ships[0].setPosition(.100, .500);
+    ships[0].setDirection(0);
+    ships[0].resetVector();
+    console.log('client connect: ' + socket.id);
+    io.emit('client ID', ships[0].socketId);
+    set = true;
   };
-  if (ships[1]) {
+  if ((ships[1].socketId === 0) && (!set)) {
+    ships[1].socketId = socket.id;
     ships[1].setPosition(.900, .500);
     ships[1].setDirection(Math.PI);
+    ships[1].resetVector();
+    console.log('client connect: ' + socket.id);
+    io.emit('client ID', ships[1].socketId);
   };
 
   socket.on('disconnect', function() {
     for (i=0; i<ships.length; i++) {
       if (ships[i].socketId === socket.id) {
-        ships.splice(i,1);
+        ships[i].socketId = 0;
         console.log('client disconnect: ' + socket.id);
       };
     };
@@ -122,7 +135,7 @@ function updateClients() {
     if (ships[i].keyState[74]) {
       console.log('client: ' + ships[i].socketId + ' fire');
     };
-    // ships[i].newPosition();
+    ships[i].newPosition();
   };
 };
 
