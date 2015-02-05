@@ -17,6 +17,7 @@ function Ship() {
   this.direction = 0; // radians
   this.alive = true;
   this.vector = [0,0]; // x & y
+  this.velocityLimit = 0.02;
   this.setPosition = function(x,y) {
     this.x = x;
     this.y = y;
@@ -33,6 +34,19 @@ function Ship() {
     yToAdd = impulse * Math.sin(direction);
     this.vector[0] += xToAdd;
     this.vector[1] += yToAdd;
+    // velocity limit
+    if ((Math.abs(this.vector[0]) >= this.velocityLimit) && (this.vector[0] >= 0)) {
+      this.vector[0] = this.velocityLimit;
+    };
+    if ((Math.abs(this.vector[0]) >= this.velocityLimit) && (this.vector[0] <= 0)) {
+      this.vector[0] = -1 * this.velocityLimit;
+    };
+    if ((Math.abs(this.vector[1]) >= this.velocityLimit) && (this.vector[1] >= 0)) {
+      this.vector[1] = this.velocityLimit;
+    };
+    if ((Math.abs(this.vector[1]) >= this.velocityLimit) && (this.vector[1] <= 0)) {
+      this.vector[1] = -1 * this.velocityLimit;
+    };
   };
   this.rotate = function(amount) {
     this.direction += amount;
@@ -40,6 +54,19 @@ function Ship() {
   this.newPosition = function() {
     this.x = this.x + this.vector[0];
     this.y = this.y + this.vector[1];
+    // screen wraparound
+    if (this.x <= 0) {
+      this.x = .998;
+    };
+    if (this.x >= .999) {
+      this.x = 0;
+    };
+    if (this.y <= 0) {
+      this.y = .998;
+    };
+    if (this.y >= .999) {
+      this.y = 0;
+    };
   };
 };
 
@@ -61,7 +88,7 @@ io.on('connection', function(socket) {
     ships[1].socketId = socket.id;
     ships[1].setPosition(.900, .500);
     ships[1].setDirection(Math.PI);
-    ships[1].resetVector();
+    ships[1].resetVector()
     console.log('client connect: ' + socket.id);
     io.emit('client ID', ships[1].socketId);
   };
@@ -140,6 +167,3 @@ function updateClients() {
 };
 
 setInterval( function() { update(); }, 1000/60);
-
-
-
