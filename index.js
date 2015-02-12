@@ -18,6 +18,7 @@ function Ship() {
   this.alive = true;
   this.vector = [0,0]; // x & y
   this.velocityLimit = 0.02;
+  this.radius = .02; // collision detect
   this.setPosition = function(x,y) {
     this.x = x;
     this.y = y;
@@ -132,16 +133,9 @@ http.listen(3000, function() {
   console.log('listening on *:3000');
 });
 
-function update() {
-  if (ships[0] && ships[1]) {  // don't run until clients are connected
-    updateClients();
-    txFrame(ships[0].x, ships[0].y, ships[0].direction, ships[1].x, ships[1].y, ships[1].direction);
-  };
-};
-
-function txFrame(s1_x, s1_y, s1_angle, s2_x, s2_y, s2_angle) {
-  var txMsg = s1_x.toString() + ' ' + s1_y.toString() + ' ' + s1_angle.toString() + ' ' +
-              s2_x.toString() + ' ' + s2_y.toString() + ' ' + s2_angle.toString();
+function txFrame(s1_x, s1_y, s1_angle, s1_image, s2_x, s2_y, s2_angle, s2_image) {
+  var txMsg = s1_x.toString() + ' ' + s1_y.toString() + ' ' + s1_angle.toString() + ' ' + s1_image + ' ' +
+              s2_x.toString() + ' ' + s2_y.toString() + ' ' + s2_angle.toString() + ' ' + s2_image;
   io.emit('server frame', txMsg);
 };
 
@@ -166,4 +160,25 @@ function updateClients() {
   };
 };
 
-setInterval( function() { update(); }, 1000/60);
+function update() {
+  if (ships[0] && ships[1]) {  // don't run until clients are connected
+    updateClients();
+    if (collision(ships[0], ships[1])) {
+      console.log("Collided");
+    };
+    txFrame(ships[0].x, ships[0].y, ships[0].direction, 'default', ships[1].x, ships[1].y, ships[1].direction, 'default');
+  };
+};
+
+function collision(obj1, obj2) {
+  var centerVector = [obj2.x - obj1.x, obj2.y - obj1.y];
+  var distanceSquared = (centerVector[0] * centerVector[0]) + (centerVector[1] * centerVector[1]);
+  if (distanceSquared < ((obj1.radius + obj2.radius) * (obj1.radius * obj2.radius))) {
+    return true;
+  } else {
+    return false;
+  };
+};
+
+var framerate = 60; // fps
+setInterval( function() { update(); }, 1000 / framerate);

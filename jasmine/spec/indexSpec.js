@@ -33,5 +33,14 @@ describe("index.js", function() {
       expect(ship1.y).toEqual(.198);
     });
   });
+  describe("Collision Detection", function() {
+    it ("detects collision between two ship objects", function() {
+      ship1 = new Ship();
+      ship2 = new Ship();
+      ship1.setPosition(.200, .200);
+      ship2.setPosition(.200, .200);
+      expect(collision(ship1, ship2)).toEqual(true);
+    });
+  });
 });
 

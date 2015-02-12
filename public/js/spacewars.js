@@ -8,6 +8,7 @@ $.getScript("/socket.io/socket.io.js", function() {
   canvas.height = window.innerHeight;
   var canvasW = window.innerWidth;
   var canvasH = window.innerHeight;
+
   function drawBackground() {
     context.fillStyle = "#000000";
     context.fillRect(0,0,canvasW,canvasH);
@@ -16,7 +17,7 @@ $.getScript("/socket.io/socket.io.js", function() {
   function Ship() {
     this.image = document.getElementById("ship");
     // w & h refer to size of image; the ship images are being scaled to the canvas size
-    this.drawRotatedImage = function(x, y, angle, w, h) {
+    this.drawRotatedImage = function(x, y, angle, w, h, image) {
       context.save();
       context.translate(x, y);
       context.rotate(angle);
@@ -25,10 +26,10 @@ $.getScript("/socket.io/socket.io.js", function() {
     };
   };
 
-  function drawFrame(s1_x, s1_y, s1_angle, s2_x, s2_y, s2_angle) {
+  function drawFrame(s1_x, s1_y, s1_angle, s1_image, s2_x, s2_y, s2_angle, s2_image) {
     drawBackground();
-    ship0.drawRotatedImage(s1_x, s1_y, s1_angle, canvasW / 25, canvasH / 20);
-    ship1.drawRotatedImage(s2_x, s2_y, s2_angle, canvasW / 25, canvasH / 20);
+    ship0.drawRotatedImage(s1_x, s1_y, s1_angle, canvasW / 25, canvasH / 20, s1_image);
+    ship1.drawRotatedImage(s2_x, s2_y, s2_angle, canvasW / 25, canvasH / 20, s2_image);
   };
 
   ship0 = new Ship();
@@ -47,8 +48,8 @@ $.getScript("/socket.io/socket.io.js", function() {
   });
   socket.on('server frame', function(msg) {
     var rxParams = msg.split(' ');
-    drawFrame(parseFloat(rxParams[0]) * canvasW, parseFloat(rxParams[1]) * canvasH, parseFloat(rxParams[2]),
-              parseFloat(rxParams[3]) * canvasW, parseFloat(rxParams[4]) * canvasH, parseFloat(rxParams[5]));
+    drawFrame(parseFloat(rxParams[0]) * canvasW, parseFloat(rxParams[1]) * canvasH, parseFloat(rxParams[2]), rxParams[3],
+              parseFloat(rxParams[4]) * canvasW, parseFloat(rxParams[5]) * canvasH, parseFloat(rxParams[6]), rxParams[7]);
   });
   window.addEventListener('keydown',function(e) {
     txMsg = clientId + ' ' + e.keyCode;
