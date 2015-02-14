@@ -18,7 +18,10 @@ function Ship() {
   this.alive = true;
   this.vector = [0,0]; // x & y
   this.velocityLimit = 0.02;
-  this.radius = .02; // collision detect
+  this.radius = .06; // collision detect
+  this.explosionTimer = 0;
+  this.isExploding = false;
+  this.currentImage = 'ship';
   this.setPosition = function(x,y) {
     this.x = x;
     this.y = y;
@@ -141,6 +144,9 @@ function txFrame(s1_x, s1_y, s1_angle, s1_image, s2_x, s2_y, s2_angle, s2_image)
 
 function updateClients() {
   for (i=0; i<ships.length; i++) {
+    if (ships[i].explosionTimer < 0) {
+      ships[i].explosionTimer
+    }
     if (ships[i].keyState[65]) {
       ships[i].rotate(-Math.PI / 32);
       console.log('client: ' + ships[i].socketId + ' rotate counterclockwise');
@@ -165,8 +171,12 @@ function update() {
     updateClients();
     if (collision(ships[0], ships[1])) {
       console.log("Collided");
+      ships[0].explosionTimer = 60;
+      ships[0].isExploding = true;
+      ships[1].explosionTimer = 60;
+      ships[1].isExploding = true;
     };
-    txFrame(ships[0].x, ships[0].y, ships[0].direction, 'default', ships[1].x, ships[1].y, ships[1].direction, 'default');
+    txFrame(ships[0].x, ships[0].y, ships[0].direction, ships[0].currentImage, ships[1].x, ships[1].y, ships[1].direction, ships[1].currentImage);
   };
 };
 

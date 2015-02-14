@@ -40,6 +40,12 @@ describe("index.js", function() {
       ship1.setPosition(.200, .200);
       ship2.setPosition(.200, .200);
       expect(collision(ship1, ship2)).toEqual(true);
+      ship1.setPosition(.200, .200);
+      ship1.setPosition(.214, .214);
+      expect(collision(ship1, ship2)).toEqual(true);
+      ship1.setPosition(.200, .200);
+      ship1.setPosition(.215, .215);
+      expect(collision(ship1, ship2)).toEqual(false);
     });
   });
 });

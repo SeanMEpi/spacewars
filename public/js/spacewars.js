@@ -1,6 +1,9 @@
 $.getScript("/socket.io/socket.io.js", function() {
 
   document.getElementById("ship").style.display = "none";
+  document.getElementById("explosion0").style.display = "none";
+  document.getElementById("explosion1").style.display = "none";
+  document.getElementById("explosion2").style.display = "none";
 
   var canvas = document.getElementById("canvas");
   var context = canvas.getContext("2d");
