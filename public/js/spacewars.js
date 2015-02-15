@@ -29,10 +29,19 @@ $.getScript("/socket.io/socket.io.js", function() {
     };
   };
 
+  function drawRotatedImage(x, y, angle, w, h, image) {
+    var thisImage = document.getElementById(image);
+    context.save();
+    context.translate(x, y);
+    context.rotate(angle);
+    context.drawImage(thisImage, -(w / 2), -(h / 2), canvasW / 25, canvasH / 20);
+    context.restore();
+  };
+
   function drawFrame(s1_x, s1_y, s1_angle, s1_image, s2_x, s2_y, s2_angle, s2_image) {
     drawBackground();
-    ship0.drawRotatedImage(s1_x, s1_y, s1_angle, canvasW / 25, canvasH / 20, s1_image);
-    ship1.drawRotatedImage(s2_x, s2_y, s2_angle, canvasW / 25, canvasH / 20, s2_image);
+    drawRotatedImage(s1_x, s1_y, s1_angle, canvasW / 25, canvasH / 20, s1_image);
+    drawRotatedImage(s2_x, s2_y, s2_angle, canvasW / 25, canvasH / 20, s2_image);
   };
 
   ship0 = new Ship();

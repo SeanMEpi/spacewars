@@ -22,14 +22,17 @@ function Ship() {
   this.currentImage = 'ship';
   this.explosionTimer = 0;
   this.explode = function(count) {
-    if (count >= 40) {
-      this.currentImage = 'explosion0';
+    if (count >= 27) {
+      this.currentImage = 'explosion2';
     };
-    if ((count >= 20) && (count < 40)) {
+    if ((count >= 17) && (count < 27)) {
       this.currentImage = 'explosion1';
     };
-    if ((count >=0) && (count < 20)) {
-      this.currentImage = 'explosion2';
+    if ((count >= 7) && (count < 17)) {
+      this.currentImage = 'explosion0';
+    };
+    if ((count >=0) && (count < 7)) {
+      this.currentImage = 'explosion1';
     };
     if (count <= 0) {
       this.currentImage = 'ship';
@@ -185,8 +188,8 @@ function update() {
     updateClients();
     if (collision(ships[0], ships[1])) {
       console.log("Collided");
-      ships[0].explosionTimer = 60;
-      ships[1].explosionTimer = 60;
+      ships[0].explosionTimer = 30;
+      ships[1].explosionTimer = 30;
     };
     txFrame(ships[0].x, ships[0].y, ships[0].direction, ships[0].currentImage, ships[1].x, ships[1].y, ships[1].direction, ships[1].currentImage);
   };
