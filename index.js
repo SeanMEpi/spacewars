@@ -24,7 +24,7 @@ function Ship() {
   this.radius = .06; // collision detection radius
   this.defaultImage = 'ship';
   this.currentImage = 'ship';
-  this.explosion = [1000, 'explosion2', 250, 'explosion1', 500, 'explosion0', 750, 'explosion1', 1000];
+  this.explosion = [500, 'shipExp0', 125, 'shipExp1', 250, 'shipExp2', 375, 'shipExp3', 500];
   this.explosionTimer = 0;
   this.explosionFrameCounter = 1;
   this.exploding = false;
@@ -206,7 +206,7 @@ function collision(obj1, obj2) {
 
 function explode(obj) {
   obj.resetVector();
-  var increment = obj.explosion[0] / framerate;
+  var increment = 1000 / framerate;
   obj.explosionTimer += increment;
   if (obj.explosionTimer >= obj.explosion[0]) {
     obj.exploding = false;

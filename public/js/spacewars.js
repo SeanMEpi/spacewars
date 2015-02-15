@@ -1,9 +1,24 @@
 $.getScript("/socket.io/socket.io.js", function() {
 
   document.getElementById("ship").style.display = "none";
-  document.getElementById("explosion0").style.display = "none";
-  document.getElementById("explosion1").style.display = "none";
-  document.getElementById("explosion2").style.display = "none";
+  document.getElementById("shipExp0").style.display = "none";
+  document.getElementById("shipExp1").style.display = "none";
+  document.getElementById("shipExp2").style.display = "none";
+  document.getElementById("shipExp3").style.display = "none";
+  document.getElementById("shipExp4").style.display = "none";
+  document.getElementById("shipExp5").style.display = "none";
+  document.getElementById("shipExp6").style.display = "none";
+  document.getElementById("shipExp7").style.display = "none";
+  document.getElementById("shipExp8").style.display = "none";
+  document.getElementById("shipExp9").style.display = "none";
+  document.getElementById("shipExp10").style.display = "none";
+  document.getElementById("shipExp11").style.display = "none";
+  document.getElementById("shipExp12").style.display = "none";
+  document.getElementById("shipExp13").style.display = "none";
+  document.getElementById("shipExp14").style.display = "none";
+  document.getElementById("shipExp15").style.display = "none";
+  document.getElementById("shipExp16").style.display = "none";
+  document.getElementById("shipExp17").style.display = "none";
 
   var canvas = document.getElementById("canvas");
   var context = canvas.getContext("2d");
@@ -22,6 +37,7 @@ $.getScript("/socket.io/socket.io.js", function() {
     context.save();
     context.translate(x, y);
     context.rotate(angle);
+    // context.drawImage(thisImage, -(w / 2), -(h / 2), canvasW / 25, canvasH / 20);
     context.drawImage(thisImage, -(w / 2), -(h / 2), canvasW / 25, canvasH / 20);
     context.restore();
   };
@@ -45,7 +61,6 @@ $.getScript("/socket.io/socket.io.js", function() {
   });
   socket.on('server frame', function(msg) {
     var rxParams = msg.split(' ');
-    console.log(rxParams[3]);
     drawFrame(parseFloat(rxParams[0]) * canvasW, parseFloat(rxParams[1]) * canvasH, parseFloat(rxParams[2]), rxParams[3],
               parseFloat(rxParams[4]) * canvasW, parseFloat(rxParams[5]) * canvasH, parseFloat(rxParams[6]), rxParams[7]);
   });
