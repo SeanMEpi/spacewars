@@ -17,10 +17,11 @@ function Ship() {
   this.x = 0; // absolute position (.000 to .999)
   this.y = 0; // absolute position (.000 to .999)
   this.direction = 0; // radians
+  this.defaultDirection = 0;
   this.alive = true;
   this.vector = [0,0]; // x & y
   this.velocityLimit = 0.02;
-  this.radius = .06; // collision detect
+  this.radius = .06; // collision detection radius
   this.defaultImage = 'ship';
   this.currentImage = 'ship';
   this.explosion = [1000, 'explosion2', 250, 'explosion1', 500, 'explosion0', 750, 'explosion1', 1000];
@@ -91,7 +92,8 @@ io.on('connection', function(socket) {
     ships[0].defaultX = .100;
     ships[0].defaultY = .500;
     ships[0].setPosition(ships[0].defaultX, ships[0].defaultY);
-    ships[0].setDirection(0);
+    ships[0].defaultDirection = 0;
+    ships[0].setDirection(ships[0].defaultDirection);
     ships[0].resetVector();
     console.log('client connect: ' + socket.id);
     io.emit('client ID', ships[0].socketId);
@@ -102,7 +104,8 @@ io.on('connection', function(socket) {
     ships[1].defaultX = .900;
     ships[1].defaultY = .500;
     ships[1].setPosition(ships[1].defaultX, ships[1].defaultY);
-    ships[1].setDirection(Math.PI);
+    ships[1].defaultDirection = Math.PI;
+    ships[1].setDirection(ships[1].defaultDirection);
     ships[1].resetVector()
     console.log('client connect: ' + socket.id);
     io.emit('client ID', ships[1].socketId);
@@ -156,6 +159,7 @@ function updateClients() {
       if (result === 'end of explosion') {
         ships[i].currentImage = ships[i].defaultImage;
         ships[i].setPosition(ships[i].defaultX, ships[i].defaultY);
+        ships[i].setDirection(ships[i].defaultDirection);
       } else {
         ships[i].currentImage = result;
       };
