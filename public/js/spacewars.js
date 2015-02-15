@@ -17,18 +17,6 @@ $.getScript("/socket.io/socket.io.js", function() {
     context.fillRect(0,0,canvasW,canvasH);
     };
 
-  function Ship() {
-    this.image = document.getElementById("ship");
-    // w & h refer to size of image; the ship images are being scaled to the canvas size
-    this.drawRotatedImage = function(x, y, angle, w, h, image) {
-      context.save();
-      context.translate(x, y);
-      context.rotate(angle);
-      context.drawImage(this.image, -(w / 2), -(h / 2), canvasW / 25, canvasH / 20);
-      context.restore();
-    };
-  };
-
   function drawRotatedImage(x, y, angle, w, h, image) {
     var thisImage = document.getElementById(image);
     context.save();
@@ -43,9 +31,6 @@ $.getScript("/socket.io/socket.io.js", function() {
     drawRotatedImage(s1_x, s1_y, s1_angle, canvasW / 25, canvasH / 20, s1_image);
     drawRotatedImage(s2_x, s2_y, s2_angle, canvasW / 25, canvasH / 20, s2_image);
   };
-
-  ship0 = new Ship();
-  ship1 = new Ship();
 
   var clientId = '';
   var socket = io();
