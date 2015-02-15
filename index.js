@@ -19,9 +19,22 @@ function Ship() {
   this.vector = [0,0]; // x & y
   this.velocityLimit = 0.02;
   this.radius = .06; // collision detect
-  this.explosionTimer = 0;
-  this.isExploding = false;
   this.currentImage = 'ship';
+  this.explosionTimer = 0;
+  this.explode = function(count) {
+    if (count >= 40) {
+      this.currentImage = 'explosion0';
+    };
+    if ((count >= 20) && (count < 40)) {
+      this.currentImage = 'explosion1';
+    };
+    if ((count >=0) && (count < 20)) {
+      this.currentImage = 'explosion2';
+    };
+    if (count <= 0) {
+      this.currentImage = 'ship';
+    };
+   };
   this.setPosition = function(x,y) {
     this.x = x;
     this.y = y;
@@ -144,9 +157,10 @@ function txFrame(s1_x, s1_y, s1_angle, s1_image, s2_x, s2_y, s2_angle, s2_image)
 
 function updateClients() {
   for (i=0; i<ships.length; i++) {
-    if (ships[i].explosionTimer < 0) {
-      ships[i].explosionTimer
-    }
+    if (ships[i].explosionTimer >= 0) {
+      ships[i].explosionTimer -= 1;
+      ships[i].explode(ships[i].explosionTimer);
+    };
     if (ships[i].keyState[65]) {
       ships[i].rotate(-Math.PI / 32);
       console.log('client: ' + ships[i].socketId + ' rotate counterclockwise');
@@ -172,9 +186,7 @@ function update() {
     if (collision(ships[0], ships[1])) {
       console.log("Collided");
       ships[0].explosionTimer = 60;
-      ships[0].isExploding = true;
       ships[1].explosionTimer = 60;
-      ships[1].isExploding = true;
     };
     txFrame(ships[0].x, ships[0].y, ships[0].direction, ships[0].currentImage, ships[1].x, ships[1].y, ships[1].direction, ships[1].currentImage);
   };

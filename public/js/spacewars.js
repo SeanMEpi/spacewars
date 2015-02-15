@@ -51,6 +51,7 @@ $.getScript("/socket.io/socket.io.js", function() {
   });
   socket.on('server frame', function(msg) {
     var rxParams = msg.split(' ');
+    console.log(rxParams[3]);
     drawFrame(parseFloat(rxParams[0]) * canvasW, parseFloat(rxParams[1]) * canvasH, parseFloat(rxParams[2]), rxParams[3],
               parseFloat(rxParams[4]) * canvasW, parseFloat(rxParams[5]) * canvasH, parseFloat(rxParams[6]), rxParams[7]);
   });
