@@ -8,6 +8,8 @@ app.get('/', function(req, res) {
 });
 app.use(express.static(__dirname + '/public'));
 
+var framerate = 60; // frames per second
+
 var ships = [];
 function Ship() {
   this.socketId = 0;
@@ -19,25 +21,14 @@ function Ship() {
   this.vector = [0,0]; // x & y
   this.velocityLimit = 0.02;
   this.radius = .06; // collision detect
+  this.defaultImage = 'ship';
   this.currentImage = 'ship';
+  this.explosion = [1000, 'explosion2', 250, 'explosion1', 500, 'explosion0', 750, 'explosion1', 1000];
   this.explosionTimer = 0;
-  this.explode = function(count) {
-    if (count >= 27) {
-      this.currentImage = 'explosion2';
-    };
-    if ((count >= 17) && (count < 27)) {
-      this.currentImage = 'explosion1';
-    };
-    if ((count >= 7) && (count < 17)) {
-      this.currentImage = 'explosion0';
-    };
-    if ((count >=0) && (count < 7)) {
-      this.currentImage = 'explosion1';
-    };
-    if (count <= 0) {
-      this.currentImage = 'ship';
-    };
-   };
+  this.explosionFrameCounter = 1;
+  this.exploding = false;
+  this.defaultX = 0;
+  this.defaultY = 0;
   this.setPosition = function(x,y) {
     this.x = x;
     this.y = y;
@@ -97,7 +88,9 @@ io.on('connection', function(socket) {
   var set = false;
   if (ships[0].socketId === 0) {
     ships[0].socketId = socket.id;
-    ships[0].setPosition(.100, .500);
+    ships[0].defaultX = .100;
+    ships[0].defaultY = .500;
+    ships[0].setPosition(ships[0].defaultX, ships[0].defaultY);
     ships[0].setDirection(0);
     ships[0].resetVector();
     console.log('client connect: ' + socket.id);
@@ -106,7 +99,9 @@ io.on('connection', function(socket) {
   };
   if ((ships[1].socketId === 0) && (!set)) {
     ships[1].socketId = socket.id;
-    ships[1].setPosition(.900, .500);
+    ships[1].defaultX = .900;
+    ships[1].defaultY = .500;
+    ships[1].setPosition(ships[1].defaultX, ships[1].defaultY);
     ships[1].setDirection(Math.PI);
     ships[1].resetVector()
     console.log('client connect: ' + socket.id);
@@ -126,11 +121,9 @@ io.on('connection', function(socket) {
     var rxParams = msg.split(' ');
     var rxID = rxParams[0];
     var rxKeydown = rxParams[1];
-    console.log('client: ' + rxID + ' ' + 'keydown: ' + rxKeydown);
     for (i=0;i<ships.length;i++) {
       if (rxID === ships[i].socketId) {
         ships[i].keyState[rxKeydown] = true;
-        console.log('client: ' + rxID + ' ' + 'keystate: ' + ships[i].keyState);
       };
     };
   });
@@ -138,11 +131,9 @@ io.on('connection', function(socket) {
     var rxParams = msg.split(' ');
     var rxID = rxParams[0];
     var rxKeyup = rxParams[1];
-    console.log('client: ' + rxID + ' ' + 'keyup: ' + rxKeyup);
     for (i=0;i<ships.length;i++) {
       if (rxID === ships[i].socketId) {
         ships[i].keyState[rxKeyup] = false;
-        console.log('client: ' + rxID + ' ' + 'keystate: ' + ships[i].keyState);
       };
     };
   });
@@ -160,9 +151,14 @@ function txFrame(s1_x, s1_y, s1_angle, s1_image, s2_x, s2_y, s2_angle, s2_image)
 
 function updateClients() {
   for (i=0; i<ships.length; i++) {
-    if (ships[i].explosionTimer >= 0) {
-      ships[i].explosionTimer -= 1;
-      ships[i].explode(ships[i].explosionTimer);
+    if (ships[i].exploding) {
+      var result = explode(ships[i]);
+      if (result === 'end of explosion') {
+        ships[i].currentImage = ships[i].defaultImage;
+        ships[i].setPosition(ships[i].defaultX, ships[i].defaultY);
+      } else {
+        ships[i].currentImage = result;
+      };
     };
     if (ships[i].keyState[65]) {
       ships[i].rotate(-Math.PI / 32);
@@ -187,9 +183,8 @@ function update() {
   if (ships[0] && ships[1]) {  // don't run until clients are connected
     updateClients();
     if (collision(ships[0], ships[1])) {
-      console.log("Collided");
-      ships[0].explosionTimer = 30;
-      ships[1].explosionTimer = 30;
+      ships[0].exploding = true;
+      ships[1].exploding = true;
     };
     txFrame(ships[0].x, ships[0].y, ships[0].direction, ships[0].currentImage, ships[1].x, ships[1].y, ships[1].direction, ships[1].currentImage);
   };
@@ -205,5 +200,20 @@ function collision(obj1, obj2) {
   };
 };
 
-var framerate = 60; // fps
+function explode(obj) {
+  obj.resetVector();
+  var increment = obj.explosion[0] / framerate;
+  obj.explosionTimer += increment;
+  if (obj.explosionTimer >= obj.explosion[0]) {
+    obj.exploding = false;
+    obj.explosionTimer = 0;
+    obj.explosionFrameCounter = 1;
+    return 'end of explosion';
+  };
+  if (obj.explosionTimer >= obj.explosion[obj.explosionFrameCounter + 1]) {
+    obj.explosionFrameCounter += 2;
+  };
+  return obj.explosion[obj.explosionFrameCounter];
+};
+
 setInterval( function() { update(); }, 1000 / framerate);
