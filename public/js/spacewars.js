@@ -42,10 +42,12 @@ $.getScript("/socket.io/socket.io.js", function() {
     context.restore();
   };
 
-  function drawFrame(s1_x, s1_y, s1_angle, s1_image, s2_x, s2_y, s2_angle, s2_image) {
+  function drawFrame(params) {
     drawBackground();
-    drawRotatedImage(s1_x, s1_y, s1_angle, canvasW / 25, canvasH / 20, s1_image);
-    drawRotatedImage(s2_x, s2_y, s2_angle, canvasW / 25, canvasH / 20, s2_image);
+    for (i=0; i<params.length; i=i+4) {
+      drawRotatedImage(parseFloat(params[i]) * canvasW, parseFloat(params[i+1]) * canvasH,
+                       parseFloat(params[i+2]), canvasW / 25, canvasH / 20, params[i+3]);
+    };
   };
 
   var clientId = '';
@@ -61,8 +63,7 @@ $.getScript("/socket.io/socket.io.js", function() {
   });
   socket.on('server frame', function(msg) {
     var rxParams = msg.split(' ');
-    drawFrame(parseFloat(rxParams[0]) * canvasW, parseFloat(rxParams[1]) * canvasH, parseFloat(rxParams[2]), rxParams[3],
-              parseFloat(rxParams[4]) * canvasW, parseFloat(rxParams[5]) * canvasH, parseFloat(rxParams[6]), rxParams[7]);
+    drawFrame(rxParams);
   });
   window.addEventListener('keydown',function(e) {
     txMsg = clientId + ' ' + e.keyCode;
