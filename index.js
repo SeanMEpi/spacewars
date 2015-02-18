@@ -149,7 +149,9 @@ http.listen(3000, function() {
 function txFrame(s1_x, s1_y, s1_angle, s1_image, s2_x, s2_y, s2_angle, s2_image) {
   var txMsg = s1_x.toString() + ' ' + s1_y.toString() + ' ' + s1_angle.toString() + ' ' + s1_image + ' ' +
               s2_x.toString() + ' ' + s2_y.toString() + ' ' + s2_angle.toString() + ' ' + s2_image;
-  io.emit('server frame', txMsg);
+  for (i=0; i<ships.length; i++) {
+    io.to(ships[i].socketId).emit('server frame', txMsg);
+  };
 };
 
 function updateClients() {
