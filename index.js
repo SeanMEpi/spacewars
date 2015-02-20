@@ -10,8 +10,8 @@ app.use(express.static(__dirname + '/public'));
 
 var framerate = 60; // frames per second
 
-var ships = [];
-function Ship() {
+var objects = [];
+function Thing() {
   this.socketId = 0;
   this.keyState = [];
   this.x = 0; // absolute position (.000 to .999)
@@ -82,39 +82,39 @@ function Ship() {
   };
 };
 
-ships[0] = new Ship();
-ships[1] = new Ship();
+objects[0] = new Thing(); // player ship
+objects[1] = new Thing(); // player ship
 
 io.on('connection', function(socket) {
   var set = false;
-  if (ships[0].socketId === 0) {
-    ships[0].socketId = socket.id;
-    ships[0].defaultX = .100;
-    ships[0].defaultY = .500;
-    ships[0].setPosition(ships[0].defaultX, ships[0].defaultY);
-    ships[0].defaultDirection = 0;
-    ships[0].setDirection(ships[0].defaultDirection);
-    ships[0].resetVector();
+  if (objects[0].socketId === 0) {
+    objects[0].socketId = socket.id;
+    objects[0].defaultX = .100;
+    objects[0].defaultY = .500;
+    objects[0].setPosition(objects[0].defaultX, objects[0].defaultY);
+    objects[0].defaultDirection = 0;
+    objects[0].setDirection(objects[0].defaultDirection);
+    objects[0].resetVector();
     console.log('client connect: ' + socket.id);
-    io.emit('client ID', ships[0].socketId);
+    io.emit('client ID', objects[0].socketId);
     set = true;
   };
-  if ((ships[1].socketId === 0) && (!set)) {
-    ships[1].socketId = socket.id;
-    ships[1].defaultX = .900;
-    ships[1].defaultY = .500;
-    ships[1].setPosition(ships[1].defaultX, ships[1].defaultY);
-    ships[1].defaultDirection = Math.PI;
-    ships[1].setDirection(ships[1].defaultDirection);
-    ships[1].resetVector()
+  if ((objects[1].socketId === 0) && (!set)) {
+    objects[1].socketId = socket.id;
+    objects[1].defaultX = .900;
+    objects[1].defaultY = .500;
+    objects[1].setPosition(objects[1].defaultX, objects[1].defaultY);
+    objects[1].defaultDirection = Math.PI;
+    objects[1].setDirection(objects[1].defaultDirection);
+    objects[1].resetVector()
     console.log('client connect: ' + socket.id);
-    io.emit('client ID', ships[1].socketId);
+    io.emit('client ID', objects[1].socketId);
   };
 
   socket.on('disconnect', function() {
-    for (i=0; i<ships.length; i++) {
-      if (ships[i].socketId === socket.id) {
-        ships[i].socketId = 0;
+    for (i=0; i<objects.length; i++) {
+      if (objects[i].socketId === socket.id) {
+        objects[i].socketId = 0;
         console.log('client disconnect: ' + socket.id);
       };
     };
@@ -124,9 +124,9 @@ io.on('connection', function(socket) {
     var rxParams = msg.split(' ');
     var rxID = rxParams[0];
     var rxKeydown = rxParams[1];
-    for (i=0;i<ships.length;i++) {
-      if (rxID === ships[i].socketId) {
-        ships[i].keyState[rxKeydown] = true;
+    for (i=0;i<objects.length;i++) {
+      if (rxID === objects[i].socketId) {
+        objects[i].keyState[rxKeydown] = true;
       };
     };
   });
@@ -134,9 +134,9 @@ io.on('connection', function(socket) {
     var rxParams = msg.split(' ');
     var rxID = rxParams[0];
     var rxKeyup = rxParams[1];
-    for (i=0;i<ships.length;i++) {
-      if (rxID === ships[i].socketId) {
-        ships[i].keyState[rxKeyup] = false;
+    for (i=0;i<objects.length;i++) {
+      if (rxID === objects[i].socketId) {
+        objects[i].keyState[rxKeyup] = false;
       };
     };
   });
@@ -149,50 +149,50 @@ http.listen(3000, function() {
 function txFrame(s1_x, s1_y, s1_angle, s1_image, s2_x, s2_y, s2_angle, s2_image) {
   var txMsg = s1_x.toString() + ' ' + s1_y.toString() + ' ' + s1_angle.toString() + ' ' + s1_image + ' ' +
               s2_x.toString() + ' ' + s2_y.toString() + ' ' + s2_angle.toString() + ' ' + s2_image;
-  for (i=0; i<ships.length; i++) {
-    io.to(ships[i].socketId).emit('server frame', txMsg);
+  for (i=0; i<objects.length; i++) {
+    io.to(objects[i].socketId).emit('server frame', txMsg);
   };
 };
 
 function updateClients() {
-  for (i=0; i<ships.length; i++) {
-    if (ships[i].exploding) {
-      var result = explode(ships[i]);
+  for (i=0; i<objects.length; i++) {
+    if (objects[i].exploding) {
+      var result = explode(objects[i]);
       if (result === 'end of explosion') {
-        ships[i].currentImage = ships[i].defaultImage;
-        ships[i].setPosition(ships[i].defaultX, ships[i].defaultY);
-        ships[i].setDirection(ships[i].defaultDirection);
+        objects[i].currentImage = objects[i].defaultImage;
+        objects[i].setPosition(objects[i].defaultX, objects[i].defaultY);
+        objects[i].setDirection(objects[i].defaultDirection);
       } else {
-        ships[i].currentImage = result;
+        objects[i].currentImage = result;
       };
     };
-    if (ships[i].keyState[65]) {
-      ships[i].rotate(-Math.PI / 32);
-      console.log('client: ' + ships[i].socketId + ' rotate counterclockwise');
+    if (objects[i].keyState[65]) {
+      objects[i].rotate(-Math.PI / 32);
+      console.log('client: ' + objects[i].socketId + ' rotate counterclockwise');
     };
-    if (ships[i].keyState[68]) {
-      ships[i].rotate(Math.PI / 32);
-      console.log('client: ' + ships[i].socketId + ' rotate clockwise');
+    if (objects[i].keyState[68]) {
+      objects[i].rotate(Math.PI / 32);
+      console.log('client: ' + objects[i].socketId + ' rotate clockwise');
     };
-    if (ships[i].keyState[87]) {
-      ships[i].addVector(ships[i].direction, .001);
-      console.log('client: ' + ships[i].socketId + ' thrust');
+    if (objects[i].keyState[87]) {
+      objects[i].addVector(objects[i].direction, .001);
+      console.log('client: ' + objects[i].socketId + ' thrust');
     };
-    if (ships[i].keyState[74]) {
-      console.log('client: ' + ships[i].socketId + ' fire');
+    if (objects[i].keyState[74]) {
+      console.log('client: ' + objects[i].socketId + ' fire');
     };
-    ships[i].newPosition();
+    objects[i].newPosition();
   };
 };
 
 function update() {
-  if (ships[0] && ships[1]) {  // don't run until clients are connected
+  if (objects[0] && objects[1]) {  // don't run until clients are connected
     updateClients();
-    if (collision(ships[0], ships[1])) {
-      ships[0].exploding = true;
-      ships[1].exploding = true;
+    if (collision(objects[0], objects[1])) {
+      objects[0].exploding = true;
+      objects[1].exploding = true;
     };
-    txFrame(ships[0].x, ships[0].y, ships[0].direction, ships[0].currentImage, ships[1].x, ships[1].y, ships[1].direction, ships[1].currentImage);
+    txFrame(objects[0].x, objects[0].y, objects[0].direction, objects[0].currentImage, objects[1].x, objects[1].y, objects[1].direction, objects[1].currentImage);
   };
 };
 
