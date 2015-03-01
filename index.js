@@ -1,17 +1,20 @@
+/* ----- setup ----- */
 var express = require('express'),
 app = express();
+/* ----- http server for client files ----- */
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
-
 app.get('/', function(req, res) {
   res.sendFile(__dirname + '/index.html');
 });
 app.use(express.static(__dirname + '/public'));
 
+/* ----- engine setup ----- */
 var framerate = 60; // frames per second
-
 var objects = [];
 var clients = [];
+
+/* ----- Engine object defintions and related functions -----*/
 function Thing() {
   this.socketId = 0;
   this.keyState = [];
@@ -29,6 +32,8 @@ function Thing() {
   this.explosionTimer = 0;
   this.explosionFrameCounter = 1;
   this.exploding = false;
+  this.lifetime = 0;
+  this.lifeTimer = 0;
   this.defaultX = 0;
   this.defaultY = 0;
   this.setPosition = function(x,y) {
@@ -83,9 +88,45 @@ function Thing() {
   };
 };
 
+function collision(obj1, obj2) {
+  var centerVector = [obj2.x - obj1.x, obj2.y - obj1.y];
+  var distanceSquared = (centerVector[0] * centerVector[0]) + (centerVector[1] * centerVector[1]);
+  if (distanceSquared < ((obj1.radius + obj2.radius) * (obj1.radius * obj2.radius))) {
+    return true;
+  } else {
+    return false;
+  };
+};
+
+function explode(obj) {
+  obj.resetVector();
+  var increment = 1000 / framerate;
+  obj.explosionTimer += increment;
+  if (obj.explosionTimer >= obj.explosion[0]) {
+    obj.exploding = false;
+    obj.explosionTimer = 0;
+    obj.explosionFrameCounter = 1;
+    return 'end of explosion';
+  };
+  if (obj.explosionTimer >= obj.explosion[obj.explosionFrameCounter + 1]) {
+    obj.explosionFrameCounter += 2;
+  };
+  return obj.explosion[obj.explosionFrameCounter];
+};
+
+function lifeCountdown(obj) {
+  var increment = 1000 / framerate;
+  obj.lifeCounter += increment;
+  if (obj.lifeCounter >= obj.lifetime) {
+    // remove object from objects array (no longer sent to client)
+  };
+};
+
+/* ----- add client ships ----- */
 clients[0] = new Thing(); // player ship
 clients[1] = new Thing(); // player ship
 
+/* ----- client connect & disconnect (single game instance) ----- */
 io.on('connection', function(socket) {
   var set = false;
   if (clients[0].socketId === 0) {
@@ -120,7 +161,7 @@ io.on('connection', function(socket) {
       };
     };
   });
-
+  /* ----- Client control reception ----- */
   socket.on('client keydown', function(msg) {
     var rxParams = msg.split(' ');
     var rxID = rxParams[0];
@@ -147,6 +188,7 @@ http.listen(3000, function() {
   console.log('listening on *:3000');
 });
 
+/* ----- Engine loop ----- */
 function txFrame() {
   var txMsg = '';
   var sp = ' ';
@@ -199,32 +241,6 @@ function update() {
     };
     txFrame();
   };
-};
-
-function collision(obj1, obj2) {
-  var centerVector = [obj2.x - obj1.x, obj2.y - obj1.y];
-  var distanceSquared = (centerVector[0] * centerVector[0]) + (centerVector[1] * centerVector[1]);
-  if (distanceSquared < ((obj1.radius + obj2.radius) * (obj1.radius * obj2.radius))) {
-    return true;
-  } else {
-    return false;
-  };
-};
-
-function explode(obj) {
-  obj.resetVector();
-  var increment = 1000 / framerate;
-  obj.explosionTimer += increment;
-  if (obj.explosionTimer >= obj.explosion[0]) {
-    obj.exploding = false;
-    obj.explosionTimer = 0;
-    obj.explosionFrameCounter = 1;
-    return 'end of explosion';
-  };
-  if (obj.explosionTimer >= obj.explosion[obj.explosionFrameCounter + 1]) {
-    obj.explosionFrameCounter += 2;
-  };
-  return obj.explosion[obj.explosionFrameCounter];
 };
 
 setInterval( function() { update(); }, 1000 / framerate);
