@@ -29,16 +29,20 @@ function Thing() {
   this.defaultImage = 'ship';
   this.currentImage = 'ship';
   this.explosion = ['shipExp0', 20, 'shipExp1', 40, 'shipExp2', 60, 'shipExp3', 80,
-                         'shipExp4', 100, 'shipExp5', 120, 'shipExp6', 140, 'shipExp7', 160,
-                         'shipExp8', 180, 'shipExp9', 200, 'shipExp10', 220, 'shipExp11', 240,
-                         'shipExp12', 260, 'shipExp13', 280, 'shipExp14', 300, 'shipExp15', 320,
-                         'shipExp16', 340, 'shipExp17', 360, 'shipExp18', 380, 'shipExp19', 400,
-                         'shipExp20', 420, 'shipExp21', 440, 'shipExp22', 460, 'shipExp23', 480];
+                    'shipExp4', 100, 'shipExp5', 120, 'shipExp6', 140, 'shipExp7', 160,
+                    'shipExp8', 180, 'shipExp9', 200, 'shipExp10', 220, 'shipExp11', 240,
+                    'shipExp12', 260, 'shipExp13', 280, 'shipExp14', 300, 'shipExp15', 320,
+                    'shipExp16', 340, 'shipExp17', 360, 'shipExp18', 380, 'shipExp19', 400,
+                    'shipExp20', 420, 'shipExp21', 440, 'shipExp22', 460, 'shipExp23', 480];
   this.explosionTimer = 0;
   this.explosionFrameCounter = 0;
   this.exploding = false;
   this.lifetime = 0;
   this.lifeTimer = 0;
+  this.visible = true;
+  this.torpedos = [];
+  this.firingDelay = 50;
+  this.firingDelayCounter = 0;
   this.defaultX = 0;
   this.defaultY = 0;
   this.setPosition = function(x,y) {
@@ -123,13 +127,37 @@ function lifeCountdown(obj) {
   var increment = 1000 / framerate;
   obj.lifeCounter += increment;
   if (obj.lifeCounter >= obj.lifetime) {
-    // remove object from objects array (no longer sent to client)
+    obj.visible = false; // mask from client frame
+    obj.lifecounter = 0; // reset lifecounter
+    return 'dead';
   };
+  return 'alive';
+};
+
+function firingDelay(obj) {
+  var increment = 1000 / framerate;
+  obj.firingDelayCounter += increment;
+  if (obj.firingDelayCounter >= obj.firingDelay) {
+    obj.firingDelayCounter = 0; // reset counter
+    return 'ready to fire';
+  };
+  return 'not ready to fire';
 };
 
 /* ----- add client ships ----- */
-clients[0] = new Thing(); // player ship
-clients[1] = new Thing(); // player ship
+clients[0] = new Thing();
+/* ----- add torpedos to player ship ----- */
+for (i=0; i<5; i++) {
+  clients[0].torpedos[i] = new Thing();
+  clients[0].torpedos[i].visible = false;
+  clients[0].torpedos[i].lifetime = 500;
+};
+clients[1] = new Thing();
+for (i=0; i<5; i++) {
+  clients[1].torpedos[i] = new Thing();
+  clients[1].torpedos[i].visible = false;
+  clients[1].torpedos[i].lifetime = 500;
+};
 
 /* ----- client connect & disconnect (single game instance) ----- */
 io.on('connection', function(socket) {
