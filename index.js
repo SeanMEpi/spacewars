@@ -28,9 +28,14 @@ function Thing() {
   this.radius = .06; // collision detection radius
   this.defaultImage = 'ship';
   this.currentImage = 'ship';
-  this.explosion = [500, 'shipExp0', 125, 'shipExp1', 250, 'shipExp2', 375, 'shipExp3', 500];
+  this.explosion = ['shipExp0', 20, 'shipExp1', 40, 'shipExp2', 60, 'shipExp3', 80,
+                         'shipExp4', 100, 'shipExp5', 120, 'shipExp6', 140, 'shipExp7', 160,
+                         'shipExp8', 180, 'shipExp9', 200, 'shipExp10', 220, 'shipExp11', 240,
+                         'shipExp12', 260, 'shipExp13', 280, 'shipExp14', 300, 'shipExp15', 320,
+                         'shipExp16', 340, 'shipExp17', 360, 'shipExp18', 380, 'shipExp19', 400,
+                         'shipExp20', 420, 'shipExp21', 440, 'shipExp22', 460, 'shipExp23', 480];
   this.explosionTimer = 0;
-  this.explosionFrameCounter = 1;
+  this.explosionFrameCounter = 0;
   this.exploding = false;
   this.lifetime = 0;
   this.lifeTimer = 0;
@@ -102,10 +107,10 @@ function explode(obj) {
   obj.resetVector();
   var increment = 1000 / framerate;
   obj.explosionTimer += increment;
-  if (obj.explosionTimer >= obj.explosion[0]) {
+  if (obj.explosionTimer >= obj.explosion[obj.explosion.length - 1]) {
     obj.exploding = false;
     obj.explosionTimer = 0;
-    obj.explosionFrameCounter = 1;
+    obj.explosionFrameCounter = 0;
     return 'end of explosion';
   };
   if (obj.explosionTimer >= obj.explosion[obj.explosionFrameCounter + 1]) {

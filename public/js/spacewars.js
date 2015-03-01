@@ -19,6 +19,12 @@ $.getScript("/socket.io/socket.io.js", function() {
   document.getElementById("shipExp15").style.display = "none";
   document.getElementById("shipExp16").style.display = "none";
   document.getElementById("shipExp17").style.display = "none";
+  document.getElementById("shipExp18").style.display = "none";
+  document.getElementById("shipExp19").style.display = "none";
+  document.getElementById("shipExp20").style.display = "none";
+  document.getElementById("shipExp21").style.display = "none";
+  document.getElementById("shipExp22").style.display = "none";
+  document.getElementById("shipExp23").style.display = "none";
 
   var canvas = document.getElementById("canvas");
   var context = canvas.getContext("2d");
@@ -37,8 +43,7 @@ $.getScript("/socket.io/socket.io.js", function() {
     context.save();
     context.translate(x, y);
     context.rotate(angle);
-    // context.drawImage(thisImage, -(w / 2), -(h / 2), canvasW / 25, canvasH / 20);
-    context.drawImage(thisImage, -(w / 2), -(h / 2), canvasW / 25, canvasH / 20);
+    context.drawImage(thisImage, -(w / 2), -(h / 2), w, h);
     context.restore();
   };
 
