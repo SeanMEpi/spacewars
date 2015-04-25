@@ -224,14 +224,20 @@ http.listen(3000, function() {
 /* ----- Engine loop ----- */
 function txFrame() {
   var txMsg = '';
-  var sp = ' ';
   for (i=0; i<clients.length; i++) {
-    txMsg = txMsg.concat(clients[i].x.toString() + sp + clients[i].y.toString() + sp + clients[i].direction.toString() + sp + clients[i].currentImage + sp);
+    txMsg = txMsg.concat(txFrameItem(clients[i]));
   };
   txMsg = txMsg.trim();
   for (i=0; i<clients.length; i++) {
     io.to(clients[i].socketId).emit('server frame', txMsg);
   };
+};
+
+function txFrameItem(objectToAdd) {
+  txMsgSlice = '';
+  var sp = ' ';
+  txMsgSlice = txMsgSlice.concat(objectToAdd.x.toString() + sp + objectToAdd.y.toString() + sp + objectToAdd.direction.toString() + sp + objectToAdd.currentImage + sp);
+  return txMsgSlice;
 };
 
 function updateClients() {
