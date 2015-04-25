@@ -11,7 +11,6 @@ app.use(express.static(__dirname + '/public'));
 
 /* ----- engine setup ----- */
 var framerate = 60; // frames per second
-var objects = [];
 var clients = [];
 
 /* ----- Engine object defintions and related functions -----*/
@@ -226,6 +225,11 @@ function txFrame() {
   var txMsg = '';
   for (i=0; i<clients.length; i++) {
     txMsg = txMsg.concat(txFrameItem(clients[i]));
+    for (j=0; j<clients[i].torpedos.length; j++) {
+      if (clients[i].torpedos[j].visible) {
+        txMsg = txMsg.concat(txFrameItem(clients[i].torpedos[j]));
+      };
+    };
   };
   txMsg = txMsg.trim();
   for (i=0; i<clients.length; i++) {
