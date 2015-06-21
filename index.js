@@ -1,3 +1,11 @@
+// TBI 6-21-15
+//  make clients ships objects and mark client ship objects with client id
+//  i.e decouple clients[] from ships and reserve for direct client actions such as keypresses
+//  this should make handling objects more straightforward
+//  Do this first before adding torp logic
+
+//  add # of clients limit to game instance
+
 /* ----- setup ----- */
 var express = require('express'),
 app = express();
@@ -256,6 +264,8 @@ function updateClients() {
         clients[i].currentImage = result;
       };
     };
+    // TBI 6-21-15
+    // Torp lifetime countdown
     if (clients[i].keyState[65]) {
       clients[i].rotate(-Math.PI / 32);
       console.log('client: ' + clients[i].socketId + ' rotate counterclockwise');
@@ -269,6 +279,13 @@ function updateClients() {
       console.log('client: ' + clients[i].socketId + ' thrust');
     };
     if (clients[i].keyState[74]) {
+      // TBI 6-21-15
+      // if torp is available:
+      //  set target of torp (i.e. torps won't detonate on own ship)
+      //  set x, y and direction of torp to current x, y and direction
+      //  set velocity to fixed value (i.e. Asteroids style, non-realistic but fun :-)
+      //  set visible
+      //  start liftime counter
       console.log('client: ' + clients[i].socketId + ' fire');
     };
     clients[i].newPosition();
@@ -278,6 +295,8 @@ function updateClients() {
 function update() {
   if (clients[0] && clients[1]) {  // don't run until clients are connected
     updateClients();
+    // TBI 6-21-15
+    //  check all collisions. Combinations not permutations :-0
     if (collision(clients[0], clients[1])) {
       clients[0].exploding = true;
       clients[1].exploding = true;
